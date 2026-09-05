@@ -1,0 +1,41 @@
+# Copy to experiments/EXP-nnnn-<slug>/evidence/manifest.yaml
+#
+# One entry per evidence file. Provenance that is not known is recorded as `unknown`.
+# It is never guessed, inferred or filled in from a datasheet (AGENTS.md §2).
+#
+schema_version: 1
+experiment: EXP-nnnn
+
+items:
+  - id: CAP-nnnn                 # CAP | DATA | IMG | MEAS | LOG
+    file: CAP-nnnn_EXP-nnnn_short-description.csv
+    kind: capture                # capture | dataset | image | measurement | log
+    describes: >
+      What this file actually shows, in words.
+    # `unknown`, or a calendar-valid ISO-8601 timestamp WITH an explicit UTC offset.
+    # Valid:   2026-09-05T14:32:10Z   2026-09-05T14:32:10+10:00   unknown
+    # Invalid: 2026-09-05T14:32:10 (no offset)   2026-09-05 (no time)
+    recorded_at: unknown
+    operator: <name>
+    hardware:
+      unit: <identifier of the physical unit>
+      revision: HW-<unit>-rNN
+      sensor: <part / assembly, or unknown>
+      fixture: <fixture identity, or none>
+    software:
+      commit: <git sha of firmware/software under test>
+      build: <build command or artifact hash, or unknown>
+      configuration: <config file/params, or unknown>
+    setup:
+      instrument: <make/model, asset ID or serial number, or none>
+      calibration: <calibration ID/status/date, or unknown if not applicable>
+      settings: <timebase, range, coupling, sample rate, trigger, …>
+      probe_points: <where probes/leads were attached, and ground reference>
+      mounting: <how the DUT/sensor was mounted and coupled>
+      environment: <ambient conditions if relevant, else unknown>
+    processing: none             # `none` for raw evidence; otherwise how it was derived,
+                                 # and the raw evidence ID it derives from
+    status: recorded             # recorded | accepted | rejected
+    notes: >
+      Anything that affects how this evidence should be trusted, including known problems
+      with the setup.

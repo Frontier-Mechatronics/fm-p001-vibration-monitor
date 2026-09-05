@@ -1,0 +1,84 @@
+# FM-P001 — machine-readable project state.
+#
+# This file is the SINGLE canonical statement of where the project currently is.
+# Anything that duplicates it elsewhere is a defect (see AGENTS.md §11).
+# Update it in the same change that alters project state.
+#
+# Schema notes:
+#   - Keep this file short. It is pasted into architecture reviews verbatim.
+#   - IDs reference artifacts elsewhere; this file never restates their content.
+#   - `gate.status` is one of: not_started | in_progress | ready_for_review | passed
+#   - Only the human engineering lead may set a gate to `passed` (AGENTS.md §5).
+
+schema_version: 1
+harness_version: "0.1"
+updated: 2026-09-05          # ISO-8601 date, updated on every state change
+
+product:
+  program: Frontier Mechatronics
+  product_id: FM-P001
+  family: SV
+  model: SV1
+  working_name: Construction Vibration & Edge Intelligence Monitor
+
+phase: project bootstrap
+
+gate:
+  current: G0
+  title: Project definition / harness
+  file: project/gates/G0-project-definition.md
+  status: ready_for_review        # set by Claude; only the human sets `passed`
+  next: G1
+
+objective:
+  summary: Establish Agentic Harness v0.1 and the initial repository shell.
+  definition_of_done: All G0 pass criteria satisfied and accepted by the human
+    engineering lead after independent review by Codex and ChatGPT.
+
+experiment:
+  active: null                    # e.g. EXP-0001; null while no experiment is running
+  note: No experiments started. Experiments begin at G1.
+
+# Requirement IDs in scope for the current gate. Empty at G0: G0 establishes the
+# requirement system itself and verifies no product requirement.
+active_requirements: []
+
+blockers: []                      # things preventing progress; empty is normal
+
+decisions_required:               # open questions needing a human/architect decision
+  - id: DQ-001
+    question: Is the SV family / SV1 model naming confirmed for requirement IDs, or
+      provisional pending a product-naming decision?
+    owner: human
+    blocking: false
+  - id: DQ-002
+    question: Which candidate accelerometer(s) and MCU platform(s) should G1 evaluate,
+      and does the human already hold suitable hardware on the bench?
+    owner: human + architect
+    blocking: true                # blocks G1 experiment definition
+
+human_actions_required:
+  - id: HA-001
+    action: Review Harness v0.1 and accept or reject G0.
+    blocking: true
+  - id: HA-002
+    action: Confirm which sensor/MCU hardware is physically available for G1, so the
+      first acquisition experiment can be scoped to hardware in hand.
+    blocking: true
+
+latest_accepted_evidence: []      # evidence IDs accepted by the human engineering lead
+
+next_proposed_actions:
+  - Architecture review of Harness v0.1 by ChatGPT (gates, requirement set, scope control).
+  - Human acceptance decision on G0.
+  - On G0 acceptance, define G1 pass criteria and draft EXP-0001 against hardware
+    confirmed available on the bench.
+
+open_scope_notes:
+  - Sensor, MCU, radio, gateway platform and cloud platform are candidates only. No
+    component or platform decision has been made (see docs/decisions/README.md).
+  - >-
+    Harness amended during G0 review: an append-only inter-agent coordination ledger was
+    added at project/coordination/ (AGENTS.md section 14), proposed by Codex and adopted
+    with four amendments. Recorded as an amendment rather than folded into the original
+    G0 scope; see project/gates/G0-project-definition.md.

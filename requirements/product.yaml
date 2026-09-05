@@ -1,0 +1,192 @@
+# FM-P001 (SV1) — initial product requirements.
+#
+# STATUS: every requirement below is `draft`. None is accepted.
+# Numeric targets are TARGETS TO BE JUSTIFIED, not derived values (see README.md).
+# Conventions: requirements/README.md
+#
+schema_version: 1
+product_id: FM-P001
+model: SV1
+updated: 2026-09-05
+
+requirements:
+
+  - id: SV-SYS-001
+    title: End-to-end measurement path
+    statement: >
+      The system shall convey a detected vibration event from the sensing node, through an
+      edge gateway, to a cloud service where it can be inspected.
+    status: draft
+    rationale: >
+      FM-P001 is defined as an end-to-end product. This requirement fixes the scope of the
+      chain; it does not fix any technology within it.
+    verification: [integration, bench]
+    gate: G6
+    evidence: []
+    open_questions:
+      - Node-to-gateway transport is undecided (wired, wireless, or both).
+
+  - id: SV-SYS-002
+    title: Measurement provenance
+    statement: >
+      Every retained measurement or event record shall be attributable to the hardware unit,
+      hardware revision, firmware revision and configuration that produced it, and shall
+      carry a time reference.
+    status: draft
+    rationale: >
+      Without provenance, data cannot be trusted, compared across revisions, or used as
+      engineering evidence. This is a precondition for every other claim the product makes.
+    verification: [unit, bench, inspection]
+    gate: G1
+    evidence: []
+    open_questions:
+      - Required time accuracy is unknown; it should be derived from the intended analysis,
+        not assumed.
+      - Whether the node holds absolute time or only a relative time base is undecided.
+
+  - id: SV-ACQ-001
+    title: Continuous 3-axis acquisition
+    statement: >
+      The node shall continuously acquire vibration on three orthogonal axes without gaps in
+      the sample stream during normal operation.
+    status: draft
+    rationale: >
+      Event detection requires an uninterrupted stream; a gap is indistinguishable from
+      quiet and can hide the event of interest.
+    verification: [bench, hil]
+    gate: G1
+    evidence: []
+    open_questions:
+      - >-
+        The phrase "without gaps" needs a measurable definition (e.g. zero dropped samples
+        over a stated interval) once acquisition is characterised.
+
+  - id: SV-ACQ-002
+    title: Nominal sample rate
+    statement: >
+      The node shall sample each axis at a nominal 1 kHz, with the achieved rate and its
+      variation measured and recorded.
+    status: draft
+    rationale: >
+      1 kHz is a starting target giving nominally ~500 Hz of usable bandwidth, which is a
+      plausible starting point for construction vibration. The target is provisional.
+    verification: [bench]
+    gate: G1
+    evidence: []
+    open_questions:
+      - 1 kHz is an assumed starting point, not derived from a bandwidth requirement.
+      - Rate accuracy and jitter tolerance are undefined; they should follow from the
+        intended DSP.
+
+  - id: SV-DSP-001
+    title: Local event detection
+    statement: >
+      The node shall detect vibration events locally, without dependence on the gateway or
+      cloud.
+    status: draft
+    rationale: >
+      Assumed: continuous raw streaming will not fit the eventual link or power budget.
+      Local detection is an intended constraint to test against measured payload and power
+      budgets, not a conclusion already demonstrated.
+    verification: [unit, bench]
+    gate: G3
+    evidence: []
+    open_questions:
+      - Detection criteria are undefined and must be derived from measured data, not chosen
+        in advance.
+
+  - id: SV-DSP-002
+    title: Event feature generation
+    statement: >
+      For each detected event the node shall produce a compact feature record summarising
+      the event.
+    status: draft
+    rationale: >
+      A compact summary allows an event to be reported over a constrained link when the full
+      waveform cannot be, and allows triage before waveform retrieval.
+    verification: [unit, bench]
+    gate: G3
+    evidence: []
+    open_questions:
+      - Which features are useful is unknown and should be decided from real captured data.
+      - Feature record size interacts directly with the eventual link budget (R-006).
+
+  - id: SV-STO-001
+    title: Pre/post-event waveform retention
+    statement: >
+      On detecting an event, the node shall retain the waveform covering a period before and
+      after the trigger, and that data shall survive until it is retrieved or explicitly
+      discarded.
+    status: draft
+    rationale: >
+      The onset of an event carries much of its diagnostic content and is already past by
+      the time detection fires; without pre-trigger data the most informative part is lost.
+    verification: [unit, bench, hil]
+    gate: G4
+    evidence: []
+    open_questions:
+      - Pre/post durations are undefined; they should follow from observed event shapes.
+      - Survival across power loss is a distinct and harder requirement — likely a separate
+        requirement once storage is understood.
+
+  - id: SV-COM-001
+    title: Gateway event reception
+    statement: >
+      The gateway shall receive event records and their associated waveform data from a
+      node, and shall detect incomplete or corrupted transfers.
+    status: draft
+    rationale: >
+      A transfer that fails silently produces confident, wrong data — worse than no data.
+    verification: [integration, bench, hil]
+    gate: G5
+    evidence: []
+    open_questions:
+      - Transport and protocol undecided.
+      - Retry and acknowledgement behaviour undefined.
+
+  - id: SV-GW-001
+    title: Gateway local persistence
+    statement: >
+      The gateway shall persist received events and waveforms locally such that they survive
+      gateway restart.
+    status: draft
+    rationale: >
+      The gateway is the first point where data is safe from limited node storage; if it
+      loses data on restart it adds risk instead of removing it.
+    verification: [integration, fault]
+    gate: G5
+    evidence: []
+    open_questions:
+      - Local retention capacity and policy undefined.
+
+  - id: SV-GW-002
+    title: Operation during cloud outage
+    statement: >
+      The system shall continue to acquire, detect, retain and receive events while the
+      cloud is unreachable, and shall deliver retained data once connectivity returns.
+    status: draft
+    rationale: >
+      Assumed: the intended sites have poor or intermittent connectivity. A monitoring
+      system that stops monitoring when the link drops would not meet the intended use;
+      site evidence must confirm or refine this premise.
+    verification: [integration, bench, fault]
+    gate: G5
+    evidence: []
+    open_questions:
+      - Required offline endurance is undefined and depends on site realities.
+
+  - id: SV-CLD-001
+    title: Cloud event inspection
+    statement: >
+      The cloud service shall make received events inspectable, including their feature
+      record, provenance and associated waveform.
+    status: draft
+    rationale: >
+      An event that cannot be examined cannot be trusted or acted on; this closes the
+      end-to-end path defined by SV-SYS-001.
+    verification: [integration, inspection]
+    gate: G6
+    evidence: []
+    open_questions:
+      - Cloud platform undecided.
+      - User-facing analytics are out of scope at this stage.
