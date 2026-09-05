@@ -21,27 +21,41 @@ product:
   model: SV1
   working_name: Construction Vibration & Edge Intelligence Monitor
 
-phase: project bootstrap
+phase: G1 - sensor acquisition
 
 gate:
-  current: G0
-  title: Project definition / harness
-  file: project/gates/G0-project-definition.md
-  status: ready_for_review        # set by Claude; only the human sets `passed`
-  next: G1
+  current: G1
+  title: Sensor acquisition
+  file: project/gates/G1-sensor-acquisition.md
+  status: in_progress             # set by Claude; only the human sets `passed`
+  next: G2
+  previous: G0                    # passed 2026-09-05; outcome in its own gate file
 
 objective:
-  summary: Establish Agentic Harness v0.1 and the initial repository shell.
-  definition_of_done: All G0 pass criteria satisfied and accepted by the human
-    engineering lead after independent review by Codex and ChatGPT.
+  summary: >-
+    Demonstrate with physical evidence that a real accelerometer can be read by real
+    firmware at a known, independently measured sample rate.
+  definition_of_done: >-
+    G1 pass criteria agreed and satisfied, with accepted physical evidence for every
+    criterion that depends on physical behaviour.
+  note: >-
+    G1 pass criteria are NOT yet agreed. They cannot be written until the bench hardware,
+    instrument and stimulus inventories are known (HA-002, HA-003, HA-004).
 
 experiment:
   active: null                    # e.g. EXP-0001; null while no experiment is running
-  note: No experiments started. Experiments begin at G1.
+  note: >-
+    EXP-0001 is not drafted. The architecture review recommends it answer one narrow
+    question -- whether existing bench hardware can produce a continuous three-axis stream
+    whose actual sample timing can be independently measured and reconciled with the
+    firmware record. Drafting waits on the inventories.
 
-# Requirement IDs in scope for the current gate. Empty at G0: G0 establishes the
-# requirement system itself and verifies no product requirement.
-active_requirements: []
+# Requirement IDs in scope for the current gate. All remain `draft`; being in scope
+# means G1 must produce evidence about them, not that they are accepted.
+active_requirements:
+  - SV-ACQ-001                    # continuous 3-axis acquisition
+  - SV-ACQ-002                    # nominal sample rate (1 kHz is an EXPERIMENTAL target)
+  - SV-SYS-002                    # measurement provenance
 
 blockers: []                      # things preventing progress; empty is normal
 
@@ -52,27 +66,46 @@ decisions_required:               # open questions needing a human/architect dec
     owner: human
     blocking: false
   - id: DQ-002
-    question: Which candidate accelerometer(s) and MCU platform(s) should G1 evaluate,
-      and does the human already hold suitable hardware on the bench?
-    owner: human + architect
+    question: >-
+      Which accelerometer and MCU hardware is already physically on the bench? This is an
+      INVENTORY question, not a component selection. Using hardware in hand for G1 commits
+      the product to nothing.
+    owner: human
     blocking: true                # blocks G1 experiment definition
+  - id: DQ-003
+    question: >-
+      What sample-interval variation (jitter) is acceptable? Must be derived from the
+      intended DSP, not chosen now. May remain open through G1 and be answered by G3.
+    owner: architect
+    blocking: false
 
 human_actions_required:
-  - id: HA-001
-    action: Review Harness v0.1 and accept or reject G0.
-    blocking: true
   - id: HA-002
-    action: Confirm which sensor/MCU hardware is physically available for G1, so the
-      first acquisition experiment can be scoped to hardware in hand.
+    action: >-
+      Inventory the accelerometer and MCU hardware physically available on the bench. A
+      factual list of what exists and is usable -- not a selection.
+    blocking: true
+  - id: HA-003
+    action: >-
+      Inventory the measurement instruments available (oscilloscope, logic analyser, DMM),
+      including model and calibration status. G1's central claim is a sample rate measured
+      INDEPENDENTLY of firmware; without an instrument that claim cannot be made at all.
+    blocking: true
+  - id: HA-004
+    action: >-
+      Confirm what repeatable physical stimulus and mounting are available for per-axis
+      response, and whether any reference accelerometer or controlled excitation exists.
+      Determines whether G1 can claim directional response at all.
     blocking: true
 
 latest_accepted_evidence: []      # evidence IDs accepted by the human engineering lead
 
 next_proposed_actions:
-  - Architecture review of Harness v0.1 by ChatGPT (gates, requirement set, scope control).
-  - Human acceptance decision on G0.
-  - On G0 acceptance, define G1 pass criteria and draft EXP-0001 against hardware
-    confirmed available on the bench.
+  - Human to supply the three inventories (HA-002, HA-003, HA-004).
+  - On the inventories, agree G1 pass criteria with the architect, then draft EXP-0001
+    around the single acquisition-timing question recommended by the architecture review.
+  - Codex to direct its next independent review at the requirement set and the G1
+    experiment definition, per its own post-ratification instruction.
 
 open_scope_notes:
   - Sensor, MCU, radio, gateway platform and cloud platform are candidates only. No
@@ -82,3 +115,11 @@ open_scope_notes:
     added at project/coordination/ (AGENTS.md section 14), proposed by Codex and adopted
     with four amendments. Recorded as an amendment rather than folded into the original
     G0 scope; see project/gates/G0-project-definition.md.
+  - >-
+    1 kHz is an EXPERIMENTAL TARGET for G1, not a derived product requirement. The
+    architecture review is explicit that a sampling requirement must follow from the
+    measurement bandwidth the application needs, and must not be back-derived from what
+    convenient hardware happens to achieve.
+  - >-
+    Architecture actions deferred to later gates are recorded in project/roadmap.md so
+    they attach to the gate that must satisfy them.

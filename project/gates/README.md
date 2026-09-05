@@ -30,7 +30,7 @@ current and what state it is in (AGENTS.md §11).
 
 | Gate | Title | Definition | File |
 |---|---|---|---|
-| G0 | Project definition / harness | defined | [G0-project-definition.md](G0-project-definition.md) |
+| G0 | Project definition / harness | defined; outcome recorded | [G0-project-definition.md](G0-project-definition.md) |
 | G1 | Sensor acquisition | preliminary — direction only | [G1-sensor-acquisition.md](G1-sensor-acquisition.md) |
 | G2 | Instrument characterisation | title only | — |
 | G3 | DSP and event engine | title only | — |

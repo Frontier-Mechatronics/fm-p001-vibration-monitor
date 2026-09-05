@@ -60,6 +60,9 @@ requirements:
       - >-
         The phrase "without gaps" needs a measurable definition (e.g. zero dropped samples
         over a stated interval) once acquisition is characterised.
+      - >-
+        Three axes is working experimental scope, not yet a derived product requirement
+        (architecture review, 2026-09-05).
 
   - id: SV-ACQ-002
     title: Nominal sample rate
@@ -74,7 +77,15 @@ requirements:
     gate: G1
     evidence: []
     open_questions:
-      - 1 kHz is an assumed starting point, not derived from a bandwidth requirement.
+      - >-
+        1 kHz is an EXPERIMENTAL TARGET for G1, not a derived product requirement
+        (architecture review, 2026-09-05). It must not be back-derived from what the
+        available hardware happens to achieve.
+      - >-
+        Making it defensible needs: the highest vibration content that materially matters
+        to the chosen use cases, anti-alias transition band, sensor bandwidth and filter
+        characteristics, the DSP to be performed, allowable jitter for it, margin above
+        Nyquist, and evidence from representative captured signals.
       - Rate accuracy and jitter tolerance are undefined; they should follow from the
         intended DSP.
 

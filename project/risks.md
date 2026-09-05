@@ -26,7 +26,7 @@ Levels: L = likelihood, I = impact, on `low / med / high`.
 |---|---|---|---|---|---|
 | R-020 | Agents assert hardware behaviour without evidence, and it enters the record as fact | high | high | continuous | Physical evidence rule (AGENTS.md §2); unsupported claims are review-blocking defects |
 | R-021 | Scope creep toward the "final product" before evidence justifies it | high | high | continuous | Gate discipline; scope changes require an ADR |
-| R-022 | Harness overhead exceeds its value and slows engineering down | med | med | G1 | Harness v0.1 is deliberately minimal; revise it after first real use |
+| R-022 | Harness overhead exceeds its value and slows engineering down | med | med | after first completed G1 experiment | Review rule below; a condition of the G0 acceptance |
 | R-023 | Duplicated project state drifts between documents | med | med | continuous | Single canonical `project/status.yaml`; checked by `tools/validate_repo.py` |
 | R-024 | Early component choices become de-facto irreversible through accumulated code | med | high | G2 | Components stay explicitly "candidate" until an ADR decides them |
 | R-025 | Evidence volume (raw captures, datasets) outgrows git | med | med | G2 | Convention now, storage decision when it actually hurts |
@@ -38,6 +38,20 @@ Levels: L = likelihood, I = impact, on `low / med / high`.
 |---|---|---|---|---|---|
 | R-040 | Bench work involves mains power, mechanical energy or moving fixtures | med | high | continuous | Human owns all physical setup and safety; agents never direct unsupervised physical action |
 | R-041 | Field deployment on a real construction site introduces access and site-safety obligations | med | high | G10 | Out of scope until G10; site requirements to be defined with the site owner |
+
+## R-022 review rule
+
+A condition attached to the human engineering lead's G0 acceptance, and specified by the
+G0 architecture review. After the **first completed experiment**, ask:
+
+1. Which artifacts were naturally useful?
+2. Which required duplicate entry?
+3. Which were never consulted?
+4. Which omissions caused confusion?
+5. How much agent effort went into maintaining process rather than doing engineering?
+
+Delete or simplify anything that fails that test. The question is not file count; it is
+whether maintaining the artifacts displaces engineering.
 
 No compliance or regulatory risks are listed. That work has not started and inventing its
 obligations now would be speculation (AGENTS.md §8).

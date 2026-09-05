@@ -37,6 +37,26 @@ implementation is not demonstration.
 **Every requirement is currently unproven.** No experiment has been run and no evidence
 exists. This is the correct state at G0.
 
+## Coverage gaps (known), with the gate each must be closed by
+
+Deadlines set by the G0 architecture review
+(`project/reviews/G0-chatgpt-review-2026-09-05.md`), which ruled the gaps acceptable at G0
+but **not equally deferrable**. Full list in `project/roadmap.md`.
+
+| Gap | Must exist before |
+|---|---|
+| Mounting, sensor coupling, measurement orientation | G2 |
+| Calibration / traceability needed for physical-unit claims | G2 |
+| Device identity; configuration identity and versioning | G5 |
+| Message and data integrity; node↔gateway trust model | G5 |
+| Behaviour under duplicate, incomplete and corrupt transfers | G5 |
+| Configuration ownership and persistence | G5 |
+| Offline endurance target | G5–G7 |
+| Production power budget | G7 |
+| Firmware update / OTA | G7–G8 |
+| Environmental operating envelope | G8–G10 |
+| Regulatory / certification | deferred until product maturity justifies it |
+
 ## Coverage gaps (known)
 
 - `HW` and `OPS` areas have no requirements. Deliberate: hardware and field-operation
