@@ -39,8 +39,8 @@ objective:
     G1 pass criteria agreed and satisfied, with accepted physical evidence for every
     criterion that depends on physical behaviour.
   note: >-
-    G1 pass criteria are NOT yet agreed. They cannot be written until the bench hardware,
-    instrument and stimulus inventories are known (HA-002, HA-003, HA-004).
+    G1 pass criteria are NOT yet agreed (DQ-004). The bench inventory now makes them
+    writable; bench execution additionally waits on ADXL355 delivery.
 
 experiment:
   active: null                    # e.g. EXP-0001; null while no experiment is running
@@ -66,46 +66,86 @@ decisions_required:               # open questions needing a human/architect dec
     owner: human
     blocking: false
   - id: DQ-002
+    status: resolved
+    resolved: 2026-09-05
     question: >-
-      Which accelerometer and MCU hardware is already physically on the bench? This is an
-      INVENTORY question, not a component selection. Using hardware in hand for G1 commits
-      the product to nothing.
+      Which accelerometer and MCU hardware is available? Resolved as an INVENTORY, not a
+      selection: see hardware/inventory.md. Nucleo F411RE is the preferred experimental
+      host; 3x EVAL-ADXL355-PMDZ are on order. No ADR selects either; the R-024 checkpoint
+      before G2 tests whether that has held in practice.
     owner: human
-    blocking: true                # blocks G1 experiment definition
+    blocking: false
   - id: DQ-003
     question: >-
       What sample-interval variation (jitter) is acceptable? Must be derived from the
       intended DSP, not chosen now. May remain open through G1 and be answered by G3.
     owner: architect
     blocking: false
+  - id: DQ-004
+    question: >-
+      G1 pass criteria are not yet agreed. The bench inventory now makes them writable.
+      Agree them with the architect before EXP-0001 is drafted.
+    owner: architect + human
+    blocking: true                # blocks EXP-0001 drafting
+  - id: DQ-005
+    question: >-
+      The primary oscilloscope is a two-channel instrument (manufacturer specification).
+      DRDY plus a GPIO marker consumes both channels, leaving none for SPI chip-select or
+      clock. Does EXP-0001 need simultaneous bus observation, or can it proceed with
+      separate captures using different probe arrangements?
+    owner: architect + human
+    blocking: false               # affects experiment design, not readiness to draft
 
 human_actions_required:
   - id: HA-002
+    status: substantially_resolved
     action: >-
-      Inventory the accelerometer and MCU hardware physically available on the bench. A
-      factual list of what exists and is usable -- not a selection.
-    blocking: true
+      Inventory the accelerometer and MCU hardware physically available. MCU side resolved
+      (hardware/inventory.md). Sensor side ORDERED BUT NOT DELIVERED -- 3x
+      EVAL-ADXL355-PMDZ. Remains open until the boards are physically in hand.
+    blocking: false               # no longer blocks planning; blocks bench work
   - id: HA-003
+    status: resolved
+    resolved: 2026-09-05
     action: >-
-      Inventory the measurement instruments available (oscilloscope, logic analyser, DMM),
-      including model and calibration status. G1's central claim is a sample rate measured
-      INDEPENDENTLY of firmware; without an instrument that claim cannot be made at all.
-    blocking: true
+      Inventory the measurement instruments. Resolved for G1 planning: Siglent SDS1202X-E
+      primary, HDS272S secondary, Rigol DP932E supply, no logic analyser (deferred, and
+      not a G1 blocker). See hardware/inventory.md.
+    blocking: false
   - id: HA-004
+    status: partially_resolved
     action: >-
-      Confirm what repeatable physical stimulus and mounting are available for per-axis
-      response, and whether any reference accelerometer or controlled excitation exists.
-      Determines whether G1 can claim directional response at all.
-    blocking: true
+      Stimulus and mounting. STIMULUS RESOLVED: 3x Vybronics VC1020B111F ERM motors on
+      order, providing controlled repeatable excitation (not a magnitude reference).
+      MOUNTING REMAINS OPEN -- how the sensor is attached to the excited structure is
+      unresolved, and is a G2 measurement-system concern that G1 must work around rather
+      than solve.
+    blocking: false
+
+  - id: HA-005
+    action: >-
+      Record instrument serial numbers or asset IDs and calibration state in
+      hardware/inventory.md. Currently `unknown`. Required by experiments/evidence.md
+      before any evidence manifest can be completed -- fill before measuring, not after.
+    blocking: false               # blocks evidence recording, not experiment drafting
 
 latest_accepted_evidence: []      # evidence IDs accepted by the human engineering lead
 
 next_proposed_actions:
-  - Human to supply the three inventories (HA-002, HA-003, HA-004).
-  - On the inventories, agree G1 pass criteria with the architect, then draft EXP-0001
-    around the single acquisition-timing question recommended by the architecture review.
-  - Codex to direct its next independent review at the requirement set and the G1
-    experiment definition, per its own post-ratification instruction.
+  - Agree G1 pass criteria with the architect (DQ-004), now that the bench inventory makes
+    them writable.
+  - Draft EXP-0001 around the acquisition-timing question, once criteria are agreed and
+    subject to human direction. Bench execution waits on ADXL355 delivery.
+  - Record instrument serials and calibration state (HA-005) before any evidence is taken.
+  - >-
+    R-024 dependency control (project/risks.md) is now two-part: classify at the moment a
+    board- or sensor-specific dependency spreads beyond EXP-0001 support (event trigger, not
+    a cadence), with the mandatory before-G2 checkpoint as backstop. Each dependency is
+    recorded as disposable, an explicit experiment constraint, or needing an ADR /
+    comparative experiment.
+  - >-
+    Claude to add Codex's event-triggered R-024 classification before G1-specific
+    dependencies are reused or retained (MSG-20260905T032805Z-c949-codex), then reply.
 
 open_scope_notes:
   - Sensor, MCU, radio, gateway platform and cloud platform are candidates only. No
@@ -123,3 +163,12 @@ open_scope_notes:
   - >-
     Architecture actions deferred to later gates are recorded in project/roadmap.md so
     they attach to the gate that must satisfy them.
+  - >-
+    Bench hardware is recorded once, in hardware/inventory.md. The Nucleo F411RE is an
+    EXPERIMENT HOST and the EVAL-ADXL355-PMDZ an EXPERIMENT PLATFORM. No ADR selects an MCU
+    family or sensor for SV1. The earlier claim that experimental use "commits the product
+    to nothing" was rejected in review as untestable; whether lock-in has occurred is
+    decided by the R-024 checkpoint in project/risks.md, which runs before G2 opens.
+  - >-
+    Nothing physical has been measured by this project. Every hardware specification on
+    record is manufacturer documentation, i.e. `predicted`, not measured.

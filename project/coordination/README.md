@@ -153,6 +153,12 @@ attribution — every field is required and validated.
 be left empty or as an unfilled placeholder. `Relayed from` is not repeated here — it is
 already in the header.
 
+**Create the relay at receipt.** A relay written later cannot carry an honest
+`Supplied at`, because the moment it was actually supplied has passed and inventing it is
+forbidden. That makes an unattributed relay **unrepairable after the fact**: the only honest
+record is the gap itself, disclosed where the content was used. One such gap already exists,
+disclosed in `project/gates/G0-project-definition.md`.
+
 The distinction `Fidelity` records is the point of the section: a reader must be able to
 tell whether they are seeing the relayed party's words or the relayer's paraphrase of them.
 Those carry different weight, and conflating them is how a summary becomes attributed as a

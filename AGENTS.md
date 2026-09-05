@@ -166,7 +166,11 @@ Rules:
    for each such criterion.
 4. Agents may propose that a gate is *ready for review*. Agents may never mark a gate
    `passed`. Only the human engineering lead changes a gate to `passed`.
-5. Future gates beyond the next one are intentionally under-specified. Do not over-specify
+5. **A state transition cites an explicit human instruction; it never infers one.** The
+   arrival of a review artifact, an acceptance quoted in a message, or an unblocked
+   dependency is not an instruction to transition. Record which instruction authorised the
+   change. (Process finding, `MSG-20260905T032337Z-d542-codex`.)
+6. Future gates beyond the next one are intentionally under-specified. Do not over-specify
    them; do not build for them.
 
 ---
@@ -223,6 +227,16 @@ Prohibited without explicit human approval recorded in `project/status.yaml` or 
 
 If scope needs to change, propose it as an ADR with alternatives and consequences. Do not
 change it in passing while doing something else.
+
+### Procurement discipline
+
+> **Additional procurement must be justified by an explicit experimental limitation.**
+
+A standing Frontier Mechatronics rule. Do not propose purchases because they may be useful
+later. When an experiment cannot answer its question with the hardware in hand, that
+limitation is the justification — and it is recorded in the experiment record *before* the
+purchase, so the reasoning survives. Hardware in hand is recorded in
+`hardware/inventory.md`.
 
 ---
 

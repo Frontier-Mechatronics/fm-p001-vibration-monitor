@@ -75,18 +75,89 @@ product bandwidth, final sample rate, final MCU, DSP suitability or mounting des
 needs to measure. Procurement then follows from a demonstrated experiment limitation, never
 from anticipated product architecture.
 
+## Anticipated bench arrangement
+
+Hardware is recorded in [`hardware/inventory.md`](../../hardware/inventory.md); it is not
+restated here. **This arrangement is anticipated, not validated** — the measurement method
+is not fixed until the sensor interface is confirmed on real hardware, and the ADXL355
+boards have not been delivered.
+
+```text
+        EVAL-ADXL355-PMDZ
+                │
+               SPI
+                │
+         Nucleo F411RE
+                │
+                ├── UART / debug ─────────→ host
+                │
+                └── GPIO timing marker ───→ Siglent CH2
+
+        ADXL355 DRDY ────────────────────→ Siglent CH1
+```
+
+The point of the arrangement is to compare three things that are usually assumed to agree:
+
+| Source | What it tells us |
+|---|---|
+| Sensor-generated timing (DRDY) | When the sensor says a sample is ready |
+| Firmware service timing (GPIO marker) | When firmware actually acts on it |
+| Retained sample sequence | What ended up in the record |
+
+Firmware self-reporting is not evidence for any of this (ADR-0004). The oscilloscope
+observes the first two independently of the code under test, which is the entire reason the
+arrangement exists.
+
+### Orientation and stimulus — stays qualitative
+
+EXP-0001 **must** name the sensor coordinate convention and the fixture and orientation used,
+so that a directional observation can be repeated and compared.
+
+EXP-0001 **must not** infer calibrated magnitude from that stimulus, or treat mounting as
+solved. Naming an orientation makes an observation repeatable; it does not make it traceable.
+Magnitude belongs to G2, and mounting design is a G2 measurement-system concern that G1 works
+around rather than answers.
+
+The distinction to hold: G1 may claim *this axis responded, in this direction, repeatably,
+in this arrangement*. It may not claim *this axis responded by this much*.
+
+### What G1 should ultimately measure
+
+- actual data-ready / sample period
+- interval variation
+- sensor-ready → firmware-service latency, where observable
+- missing or gapped acquisition behaviour
+- reconciliation between physical timing evidence and the firmware record
+
+**None of this is known.** No hardware has been measured by this project. These are the
+quantities the experiment must produce, not expectations about what it will find.
+
+### Known constraint
+
+The primary oscilloscope is a two-channel instrument (manufacturer specification). DRDY plus
+a GPIO marker consumes both channels, leaving none for SPI chip-select or clock — so bus
+activity cannot be observed in the same capture as the timing pair. Whether EXP-0001 needs
+simultaneous bus observation, or can proceed with separate captures under different probe
+arrangements, is open (DQ-005). No logic analyser is available, and its absence does not
+block G1.
+
 ## Requirements likely in scope
 
 `SV-ACQ-001`, `SV-ACQ-002`, `SV-SYS-002`. To be confirmed when G1 opens.
 
 ## Known open questions blocking G1 definition
 
-- Which accelerometer and MCU platform? No decision has been made; candidates only
-  (`DQ-002`). Whatever is already on the bench should be preferred for the first
-  experiment — the point of G1 is to learn the measurement method, not to choose a part.
+- ~~Which accelerometer and MCU platform?~~ **Resolved as an inventory** (`DQ-002`,
+  2026-09-05): Nucleo F411RE as experimental host, EVAL-ADXL355-PMDZ as experimental
+  acquisition platform. No ADR selects either. Whether that remains true in practice is
+  tested by the **R-024 checkpoint before G2 opens**, not asserted here.
 - What jitter is actually acceptable? This should be *derived* from the intended DSP, not
   guessed now.
-- Is a reference accelerometer or shaker available for absolute magnitude comparison, or is
-  G1 limited to relative/qualitative response with absolute accuracy deferred to G2?
+- No reference accelerometer or shaker is available. The ERM motors provide a controlled,
+  repeatable directional stimulus, **not** a magnitude reference, so G1 is limited to
+  direction and repeatability with absolute magnitude deferred to G2.
+- Mounting is unresolved and is not G1's to solve. How the sensor couples to the excited
+  structure changes what it measures; G1 works around this by claiming timing rather than
+  magnitude.
 - Which units, if any, can be used before G2 without being mistaken for calibrated physical
   units? Raw counts are the safe default.

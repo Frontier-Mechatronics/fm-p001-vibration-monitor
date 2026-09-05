@@ -55,6 +55,8 @@ none is lost between now and then. None was a G0 blocker.
 | G8–G10 | Environmental operating envelope |
 | After first completed experiment | Review Harness v0.1 overhead under R-022 |
 | Standing | Do not select the product accelerometer or MCU until experiment evidence creates a reason to |
+| Standing | Procure only against an explicit experimental limitation, recorded in the experiment before the purchase |
+| When an experiment demonstrates the need | Logic analyser (Saleae-class) — deferred; its absence does not block G1 |
 
 One architectural principle added by the review, worth carrying forward:
 

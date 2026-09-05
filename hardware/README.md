@@ -2,8 +2,12 @@
 
 Physical hardware: schematics, wiring records, bench setups, fixtures and bring-up notes.
 
-| Directory | Contents |
+What physical equipment exists is recorded once, in [`inventory.md`](inventory.md). Do not
+restate it elsewhere; reference it.
+
+| Path | Contents |
 |---|---|
+| [`inventory.md`](inventory.md) | **Canonical bench inventory** — instruments, dev boards, sensors, stimulus. The single place this information lives |
 | `node/` | The sensing node — sensor, acquisition, MCU carrier, wiring |
 | `fixtures/` | Test fixtures, mounts, stimulus rigs, instrument jigs |
 | `gateway/` | Edge gateway hardware and its physical setup |

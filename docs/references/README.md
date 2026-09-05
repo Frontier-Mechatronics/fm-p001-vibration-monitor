@@ -19,5 +19,10 @@ measurement technique references, and papers.
 |---|---|---|---|---|
 | — | none yet | | | |
 
-Empty at G0. First entries expected at G1 when candidate sensor and MCU documentation is
-gathered — as candidate evaluation material, not as decisions.
+Empty. First entries are expected as G1 hardware documentation is consulted — ADXL355 and
+Nucleo F411RE material in particular. Record the **document revision** when it is read: a
+value taken from an unspecified datasheet revision is not traceable, and a datasheet value
+is `predicted`, never a substitute for measurement.
+
+Referencing a datasheet here is candidate evaluation material. It is not a decision, and it
+does not make the part selected.
